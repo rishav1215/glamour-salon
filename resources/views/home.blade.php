@@ -34,10 +34,10 @@
 
         <!-- Salon Listings -->
         <section id="salons" class="mb-20">
-            <h2 class="text-3xl font-bold text-center text-gray-800 mb-12 relative">
+            {{-- <h2 class="text-3xl font-bold text-center text-gray-800 mb-12 relative">
                 <span class="bg-white px-4 relative z-10">Our Featured Salons</span>
                 <span class="absolute left-0 right-0 top-1/2 h-0.5 bg-gray-200 z-0"></span>
-            </h2>
+            </h2> --}}
 
             <div class="py-12 bg-gray-50">
                 <div class="container mx-auto px-4">

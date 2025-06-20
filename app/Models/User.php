@@ -59,4 +59,8 @@ public function salonAppointments()
             'password' => 'hashed',
         ];
     }
+    public function salon() {
+    return $this->hasOne(Salon::class, 'owner_id');
+}
+
 }

@@ -76,6 +76,13 @@ public function verifyPayment(Request $request)
 
     return redirect()->route('home')->with('success', 'Payment successful. Salon registered!');
 }
+public function appointments()
+{
+    $salon = auth()->user()->salon;
+    $bookings = $salon ? $salon->bookings()->orderBy('appointment_time', 'asc')->get() : collect();
+
+    return view('salonsOwner.appointment', compact('salon', 'bookings'));
+}
 
 
 }

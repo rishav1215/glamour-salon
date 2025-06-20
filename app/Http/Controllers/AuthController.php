@@ -88,4 +88,17 @@ public function register(Request $request)
         return redirect('/');
     }
 }
+
+  public function salonAppointments()
+    {
+        $salon = Salon::where('user_id', auth()->id())->first();
+
+        if (!$salon) {
+            return redirect()->route('salon.create')->with('error', 'Please register your salon first.');
+        }
+
+        $bookings = $salon->bookings()->latest()->get();
+
+        return view('salonsOwner.appointment', compact('salon', 'bookings'));
+    }
 }
