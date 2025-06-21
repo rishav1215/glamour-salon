@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\UserRegistered;
 use App\Models\Salon;
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -79,6 +80,9 @@ public function register(Request $request)
         'password' => Hash::make($request->password),
         'role' => $request->role,
     ]);
+
+    // ✅ Send registration email
+    Mail::to($user->email)->send(new UserRegistered($user));
 
     Auth::login($user);
 
