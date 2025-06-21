@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -25,6 +26,7 @@
     </script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
+
 <body class="bg-gray-50 font-sans antialiased">
 
     <!-- Navbar -->
@@ -34,23 +36,28 @@
                 <div class="bg-white/20 p-2 rounded-lg">
                     <i class="fas fa-spa text-2xl text-pink-300"></i>
                 </div>
-                <span class="text-2xl font-bold tracking-tight">Glamour<span class="text-secondary-500">Salon</span></span>
+                <span class="text-2xl font-bold tracking-tight">Glamour<span
+                        class="text-secondary-500">Salon</span></span>
             </div>
 
-                <nav class="hidden md:flex space-x-8">
-                    <a href="{{route('home')}}" class="hover:text-secondary-500 transition duration-300 font-medium flex items-center py-1 border-b-2 border-transparent hover:border-secondary-500">
-                        <i class="fas fa-home mr-2"></i> Home
-                    </a>
-                    <a href="#" class="hover:text-secondary-500 transition duration-300 font-medium flex items-center py-1 border-b-2 border-transparent hover:border-secondary-500">
-                        <i class="fas fa-info-circle mr-2"></i> About
-                    </a>
-                    <a href="#" class="hover:text-secondary-500 transition duration-300 font-medium flex items-center py-1 border-b-2 border-transparent hover:border-secondary-500">
-                        <i class="fas fa-envelope mr-2"></i> Contact
-                    </a>
-                    <a href="#" class="hover:text-secondary-500 transition duration-300 font-medium flex items-center py-1 border-b-2 border-transparent hover:border-secondary-500">
-                        <i class="fas fa-calendar-alt mr-2"></i> Bookings
-                    </a>
-                </nav>
+            <nav class="hidden md:flex space-x-8">
+                <a href="{{route('home')}}"
+                    class="hover:text-secondary-500 transition duration-300 font-medium flex items-center py-1 border-b-2 border-transparent hover:border-secondary-500">
+                    <i class="fas fa-home mr-2"></i> Home
+                </a>
+                <a href="#"
+                    class="hover:text-secondary-500 transition duration-300 font-medium flex items-center py-1 border-b-2 border-transparent hover:border-secondary-500">
+                    <i class="fas fa-info-circle mr-2"></i> About
+                </a>
+                <a href="#"
+                    class="hover:text-secondary-500 transition duration-300 font-medium flex items-center py-1 border-b-2 border-transparent hover:border-secondary-500">
+                    <i class="fas fa-envelope mr-2"></i> Contact
+                </a>
+                <a href="#"
+                    class="hover:text-secondary-500 transition duration-300 font-medium flex items-center py-1 border-b-2 border-transparent hover:border-secondary-500">
+                    <i class="fas fa-calendar-alt mr-2"></i> Bookings
+                </a>
+            </nav>
 
             <div class="flex items-center space-x-4">
                 @auth
@@ -61,7 +68,15 @@
                                 <i class="fas fa-user text-sm"></i>
                             </div>
                         </button>
-                        <div class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 invisible group-hover:visible opacity-0 group-hover:opacity-100 transition-all duration-300">
+                        <div
+                            class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 z-50 invisible group-hover:visible opacity-0 group-hover:opacity-100 transition-all duration-300">
+                            @if(Auth::user() && Auth::user()->role === 'salon_owner')
+                                <a href="{{ route('salonsOwner.dashboard') }}"
+                                    class="block px-4 py-2 text-gray-800 hover:bg-gray-100">
+                                    <i class="fas fa-tachometer-alt mr-2 text-secondary-600"></i> Dashboard
+                                </a>
+                            @endif
+
                             <form method="POST" action="{{ route('logout') }}">
                                 @csrf
                                 <button class="block w-full text-left px-4 py-2 text-gray-800 hover:bg-gray-100">
@@ -69,12 +84,14 @@
                                 </button>
                             </form>
                         </div>
+
                     </div>
                 @else
                     <a href="{{ route('login') }}" class="hover:text-secondary-500 transition duration-300 font-medium">
                         <i class="fas fa-sign-in-alt mr-1"></i> Login
                     </a>
-                    <a href="{{ route('register') }}" class="bg-secondary-600 hover:bg-secondary-500 px-4 py-2 rounded-lg font-medium transition duration-300">
+                    <a href="{{ route('register') }}"
+                        class="bg-secondary-600 hover:bg-secondary-500 px-4 py-2 rounded-lg font-medium transition duration-300">
                         <i class="fas fa-user-plus mr-1"></i> Register
                     </a>
                 @endauth
@@ -109,7 +126,8 @@
                     </button>
                 </form>
             @else
-                <a href="{{ route('login') }}" class="hover:text-secondary-500 transition duration-300 py-2 border-b border-white/10">
+                <a href="{{ route('login') }}"
+                    class="hover:text-secondary-500 transition duration-300 py-2 border-b border-white/10">
                     <i class="fas fa-sign-in-alt mr-3"></i> Login
                 </a>
                 <a href="{{ route('register') }}" class="hover:text-secondary-500 transition duration-300 py-2">
@@ -157,10 +175,13 @@
                 <div>
                     <h4 class="text-lg font-semibold mb-4">Services</h4>
                     <ul class="space-y-2">
-                        <li><a href="#" class="text-gray-400 hover:text-white transition duration-300">Hair Styling</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition duration-300">Hair Styling</a>
+                        </li>
                         <li><a href="#" class="text-gray-400 hover:text-white transition duration-300">Makeup</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-white transition duration-300">Nail Care</a></li>
-                        <li><a href="#" class="text-gray-400 hover:text-white transition duration-300">Spa Treatments</a></li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition duration-300">Nail Care</a>
+                        </li>
+                        <li><a href="#" class="text-gray-400 hover:text-white transition duration-300">Spa
+                                Treatments</a></li>
                     </ul>
                 </div>
                 <div>
@@ -186,10 +207,11 @@
 
     <script>
         // Mobile menu toggle
-        document.getElementById('mobile-menu-button').addEventListener('click', function() {
+        document.getElementById('mobile-menu-button').addEventListener('click', function () {
             const menu = document.getElementById('mobile-menu');
             menu.classList.toggle('hidden');
         });
     </script>
 </body>
+
 </html>

@@ -83,10 +83,10 @@
                                     </div>
                                     <p class="text-gray-600 mb-4 text-sm">{{ Str::limit($salon->services, 100) }}</p>
                                     <div class="flex justify-between items-center">
-                                        <a href=""
-                                            class="text-primary-600 font-medium hover:text-primary-800 transition flex items-center">
-                                            <i class="fas fa-info-circle mr-2"></i> Details
-                                        </a>
+                                       <a href="{{ route('salon.show', $salon->id) }}"
+    class="text-primary-600 font-medium hover:text-primary-800 transition flex items-center">
+    <i class="fas fa-info-circle mr-2"></i> Details
+</a>
 
                                         @auth
                                             <a href="{{ route('bookings.create', $salon->id) }}"

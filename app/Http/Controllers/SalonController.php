@@ -83,6 +83,13 @@ public function appointments()
 
     return view('salonsOwner.appointment', compact('salon', 'bookings'));
 }
+public function show($id)
+{
+    $salon = Salon::findOrFail($id); // or use `with()` if you need relationships
+
+    return view('salon.show', compact('salon'));
+}
+
 
 
 }

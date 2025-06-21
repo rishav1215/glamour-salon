@@ -61,3 +61,4 @@ Route::middleware(['auth'])->group(function () {
     Route::resource('appointments', \App\Http\Controllers\Admin\AppointmentController::class);
      Route::patch('/bookings/{booking}/approve', [BookingController::class, 'approve'])->name('bookings.approve');
 });
+Route::get('/salon/{id}', [SalonController::class, 'show'])->name('salon.show');
