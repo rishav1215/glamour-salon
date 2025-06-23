@@ -2,11 +2,13 @@
 
 namespace App\Http\Controllers;
 
+use App\Mail\AppointmentBooked;
 use App\Models\Booking;
 use App\Models\Salon;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Mail;
 
 class BookingController extends Controller
 {
@@ -25,15 +27,15 @@ public function store(Request $request)
         'salon_id' => 'required|exists:salons,id',
         'name' => 'required|string|max:255',
         'contact' => 'required|string|max:20',
-       'appointment_date' => 'required|date',
-    'appointment_time' => 'required',
+        'appointment_date' => 'required|date',
+        'appointment_time' => 'required',
         'email' => auth()->check() ? 'nullable' : 'required|email',
     ]);
 
-    // Combine date and time
     $appointmentDateTime = Carbon::createFromFormat('Y-m-d H:i', $request->appointment_date . ' ' . $request->appointment_time);
 
-    \App\Models\Booking::create([
+    // ✅ Save the booking and assign it to a variable
+    $booking = Booking::create([
         'salon_id' => $request->salon_id,
         'user_id' => auth()->check() ? auth()->id() : null,
         'name' => $request->name,
@@ -43,8 +45,15 @@ public function store(Request $request)
         'notes' => $request->notes,
     ]);
 
+    // ✅ Send email to salon owner
+    $salonOwner = $booking->salon->user;
+    if ($salonOwner && $salonOwner->email) {
+        Mail::to($salonOwner->email)->send(new AppointmentBooked($booking));
+    }
+
     return redirect()->route('home')->with('success', 'Appointment booked successfully!');
 }
+
 public function salonAppointments()
 {
     $salon = \App\Models\Salon::where('user_id', auth()->id())->first();
