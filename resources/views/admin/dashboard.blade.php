@@ -113,113 +113,7 @@
 <body class="bg-gray-50 overflow-x-hidden">
 
     <!-- Sidebar -->
-    <div class="fixed left-0 top-0 w-64 h-full sidebar shadow-2xl z-40 transform transition-transform duration-300"
-        id="sidebar">
-        <div class="p-6">
-            <!-- Logo -->
-            <div class="flex items-center space-x-3 mb-12">
-                <div
-                    class="w-12 h-12 bg-gradient-to-br from-blue-400 to-purple-600 rounded-xl flex items-center justify-center shadow-lg floating-animation">
-                    <i class="fas fa-crown text-white text-xl"></i>
-                </div>
-                <div>
-                    <h2 class="text-white text-xl font-bold">Admin Panel</h2>
-                    <p class="text-blue-300 text-sm">Salon Management</p>
-                </div>
-            </div>
-
-            <!-- Navigation -->
-            <nav class="space-y-2">
-                <a href="#"
-                    class="admin-nav-item flex items-center space-x-3 text-white hover:bg-white hover:bg-opacity-10 p-4 rounded-xl transition duration-300 group">
-                    <div
-                        class="w-10 h-10 bg-blue-500 bg-opacity-20 rounded-lg flex items-center justify-center group-hover:bg-opacity-30 transition">
-                        <i class="fas fa-tachometer-alt text-blue-400"></i>
-                    </div>
-                    <span class="font-medium">Dashboard</span>
-                </a>
-
-                <a href="#"
-                    class="admin-nav-item flex items-center space-x-3 text-white hover:bg-white hover:bg-opacity-10 p-4 rounded-xl transition duration-300 group">
-                    <div
-                        class="w-10 h-10 bg-green-500 bg-opacity-20 rounded-lg flex items-center justify-center group-hover:bg-opacity-30 transition">
-                        <i class="fas fa-users text-green-400"></i>
-                    </div>
-                    <span class="font-medium">Manage Users</span>
-                </a>
-
-                <a href="#"
-                    class="admin-nav-item flex items-center space-x-3 text-white hover:bg-white hover:bg-opacity-10 p-4 rounded-xl transition duration-300 group">
-                    <div
-                        class="w-10 h-10 bg-purple-500 bg-opacity-20 rounded-lg flex items-center justify-center group-hover:bg-opacity-30 transition">
-                        <i class="fas fa-spa text-purple-400"></i>
-                    </div>
-                    <span class="font-medium">Manage Salons</span>
-                </a>
-
-                <a href="#"
-                    class="admin-nav-item flex items-center space-x-3 text-white hover:bg-white hover:bg-opacity-10 p-4 rounded-xl transition duration-300 group">
-                    <div
-                        class="w-10 h-10 bg-pink-500 bg-opacity-20 rounded-lg flex items-center justify-center group-hover:bg-opacity-30 transition">
-                        <i class="fas fa-calendar-alt text-pink-400"></i>
-                    </div>
-                    <span class="font-medium">Manage Appointments</span>
-                </a>
-
-                <hr class="border-gray-600 my-6">
-
-                <a href="#"
-                    class="admin-nav-item flex items-center space-x-3 text-white hover:bg-white hover:bg-opacity-10 p-4 rounded-xl transition duration-300 group">
-                    <div
-                        class="w-10 h-10 bg-yellow-500 bg-opacity-20 rounded-lg flex items-center justify-center group-hover:bg-opacity-30 transition">
-                        <i class="fas fa-chart-bar text-yellow-400"></i>
-                    </div>
-                    <span class="font-medium">Analytics</span>
-                </a>
-
-                <a href="#"
-                    class="admin-nav-item flex items-center space-x-3 text-white hover:bg-white hover:bg-opacity-10 p-4 rounded-xl transition duration-300 group">
-                    <div
-                        class="w-10 h-10 bg-indigo-500 bg-opacity-20 rounded-lg flex items-center justify-center group-hover:bg-opacity-30 transition">
-                        <i class="fas fa-cog text-indigo-400"></i>
-                    </div>
-                    <span class="font-medium">Settings</span>
-                </a>
-            </nav>
-        </div>
-
-        <!-- Admin Profile -->
-        <div class="absolute bottom-0 left-0 right-0 p-6">
-            <div class="glass-effect p-4 rounded-xl">
-                <div class="flex items-center space-x-3">
-                    <div
-                        class="w-12 h-12 bg-gradient-to-br from-blue-400 to-purple-600 rounded-full flex items-center justify-center pulse-glow">
-                        <i class="fas fa-user-shield text-white"></i>
-                    </div>
-                    <div x-data="{ open: false }" class="relative">
-                        <!-- Trigger Button -->
-                        <button @click="open = !open" class="flex flex-col text-left focus:outline-none">
-                            <p class="text-white font-semibold">{{ Auth::user()->name }}</p>
-                            <p class="text-blue-300 text-sm truncate">{{ Auth::user()->email }}</p>
-                        </button>
-
-                        <!-- Dropdown Menu -->
-                        <div x-show="open" @click.away="open = false" x-transition
-                            class="absolute right-0 mt-2 w-40 bg-white rounded-lg shadow-lg py-2 z-50">
-                            <form method="POST" action="{{ route('logout') }}">
-                                @csrf
-                                <button type="submit"
-                                    class="block w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 transition">
-                                    <i class="fas fa-sign-out-alt mr-2"></i>Logout
-                                </button>
-                            </form>
-                        </div>
-                    </div>
-
-                </div>
-            </div>
-        </div>
-    </div>
+    @include('admin.sidebar')
 
     <!-- Mobile Sidebar Overlay -->
     <div id="sidebar-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-30 hidden lg:hidden"></div>
@@ -266,7 +160,7 @@
                     <div class="flex items-center justify-between">
                         <div>
                             <p class="text-gray-600 font-medium">Total Users</p>
-                            <h3 class="text-3xl font-bold text-gray-900 mt-1"></h3>
+                            <h3 class="text-3xl font-bold text-gray-900 mt-1">{{$users}}</h3>
                             <p class="text-green-600 text-sm font-medium mt-1">
                                 <i class="fas fa-arrow-up mr-1"></i>+12% this month
                             </p>

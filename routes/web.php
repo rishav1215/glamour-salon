@@ -1,15 +1,15 @@
 <?php
 
+use App\Http\Controllers\Admin\UserController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AppointmentController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BookingController;
+use App\Http\Controllers\HomeController;
 use App\Http\Controllers\SalonController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', function () {
-    return view('home');
-})->name('home');
+Route::get('/', [HomeController::class, 'index'])->name('home');
 
 // Authentication
 Route::get('/register', [AuthController::class, 'showRegisterForm'])->name('register');
@@ -34,12 +34,13 @@ Route::middleware('auth')->group(function () {
     Route::get('/admin/dashboard', function () {
         return view('admin.dashboard');
     });
+    
 
     // Salon creation & payment
     Route::get('/salon/create', [SalonController::class, 'create'])->name('salon.create');
     Route::post('/salon/store', [SalonController::class, 'store'])->name('salon.store');
     Route::get('/salon/payment/{salon}', [SalonController::class, 'payment'])->name('salon.payment');
-    Route::post('/salon/payment/verify', [SalonController::class, 'verifyPayment'])->name('salon.payment.verify');
+    Route::post('/salon/payment/verify', [SalonController::class, 'verify'])->name('salon.payment.verify');
 
     // Booking routes
     Route::get('/bookings/create/{salon}', [BookingController::class, 'create'])->name('bookings.create');
@@ -52,10 +53,11 @@ Route::middleware('auth')->group(function () {
 // Admin-only
 Route::middleware(['auth', 'admin'])->group(function () {
     Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
-   
-
 });
-
+Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::resource('users', \App\Http\Controllers\Admin\UserController::class);
+});
+    
 // Appointment resource (if needed)
 Route::middleware(['auth'])->group(function () {
     Route::resource('appointments', \App\Http\Controllers\Admin\AppointmentController::class);

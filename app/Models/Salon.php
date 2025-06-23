@@ -9,15 +9,19 @@ class Salon extends Model
 {
       use HasFactory;
 
-    protected $fillable = [
-        'user_id',     // <-- add this line
-        'name',
-        'location',
-        'description',
-        'image',
-        'services',
-        'is_approved',
-    ];
+   protected $fillable = [
+    'user_id', 'name', 'contact_number', 'description', 'location', 'image', 'gallery',
+    'owner_name', 'owner_email', 'owner_image', 'owner_bio',
+    'address', 'city', 'state', 'postal_code', 'country',
+    'services', 'specializations',
+    'opening_hours', 'years_in_business', 'number_of_stylists', 'accepts_credit_cards',
+    'is_approved', 'payment_id', 'approved_at', 'order_id',
+];
+
+protected $casts = [
+    'is_approved' => 'boolean',
+    'approved_at' => 'datetime',
+];
 
     // Relationships, e.g. salon belongs to user
     public function user()
@@ -27,4 +31,6 @@ class Salon extends Model
     public function bookings() {
     return $this->hasMany(Booking::class);
 }
+
+
 }
