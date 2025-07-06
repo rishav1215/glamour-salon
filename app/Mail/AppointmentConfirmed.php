@@ -13,14 +13,14 @@ class AppointmentConfirmed extends Mailable
 {
     use Queueable, SerializesModels;
 
-    public $appointment;
+    public $booking;
 
     /**
      * Create a new message instance.
      */
-    public function __construct($appointment)
+    public function __construct($booking)
     {
-        $this->appointment = $appointment;
+        $this->booking = $booking;
     }
 
     /**
@@ -29,6 +29,6 @@ class AppointmentConfirmed extends Mailable
     public function build()
     {
         return $this->subject('Your Appointment is Confirmed')
-                    ->view('emails.appointment'); // This should be your Blade view
+                    ->view('emails.booking_confirmation'); // This should be your Blade view
     }
 }

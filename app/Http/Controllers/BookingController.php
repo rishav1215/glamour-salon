@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Events\NewAppointmentBooked;
 use App\Mail\AppointmentBooked;
+use App\Mail\AppointmentConfirmed;
 use App\Models\Booking;
 use App\Models\Salon;
 use Carbon\Carbon;
@@ -12,6 +14,7 @@ use Mail;
 
 class BookingController extends Controller
 {
+    
     
    public function create($salonId)
     {
@@ -32,6 +35,7 @@ public function store(Request $request)
         'email' => auth()->check() ? 'nullable' : 'required|email',
     ]);
 
+
     $appointmentDateTime = Carbon::createFromFormat('Y-m-d H:i', $request->appointment_date . ' ' . $request->appointment_time);
 
     // ✅ Save the booking and assign it to a variable
@@ -44,6 +48,8 @@ public function store(Request $request)
         'appointment_time' => $appointmentDateTime,
         'notes' => $request->notes,
     ]);
+      \Log::info('Dispatching NewAppointmentBooked event', ['booking_id' => $booking->id]);
+event(new NewAppointmentBooked($booking));
 
     // ✅ Send email to salon owner
     $salonOwner = $booking->salon->user;
@@ -68,7 +74,8 @@ public function salonAppointments()
 }
 public function approve(Booking $booking)
 {
-    // Ensure the user owns the salon this booking is for
+    \Log::info('Approve method called for booking ID: '.$booking->id);
+
     $salon = $booking->salon;
     if ($salon->user_id !== auth()->id()) {
         abort(403, 'Unauthorized action.');
@@ -78,6 +85,11 @@ public function approve(Booking $booking)
         'status' => 'approved'
     ]);
 
+      if ($booking->email) {
+        \Mail::to($booking->email)->send(new AppointmentConfirmed($booking));
+    }
+
     return back()->with('success', 'Appointment approved successfully.');
 }
+
 }

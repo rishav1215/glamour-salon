@@ -15,7 +15,7 @@ class Salon extends Model
     'address', 'city', 'state', 'postal_code', 'country',
     'services', 'specializations',
     'opening_hours', 'years_in_business', 'number_of_stylists', 'accepts_credit_cards',
-    'is_approved', 'payment_id', 'approved_at', 'order_id',
+    'is_approved', 'payment_id', 'approved_at', 'order_id', 'status',
 ];
 
 protected $casts = [

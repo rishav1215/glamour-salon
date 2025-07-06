@@ -7,6 +7,7 @@
     <title>Salon Management System</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://js.pusher.com/7.0/pusher.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
 
@@ -93,15 +94,43 @@
         .nav-link:hover::before {
             width: 100%;
         }
+
+        <style>
+    /* ... existing styles ... */
+
+    /* Add to your existing styles */
+    .animate-ping {
+        animation: ping 1s cubic-bezier(0, 0, 0.2, 1) 1;
+    }
+    
+    @keyframes ping {
+        0% {
+            transform: scale(1);
+            opacity: 1;
+        }
+        50% {
+            transform: scale(1.2);
+            opacity: 0.5;
+        }
+        100% {
+            transform: scale(1);
+            opacity: 1;
+        }
+    }
+</style>
     </style>
 </head>
 
+<audio id="notification-sound" preload="auto">
+    <source src="{{ asset('notification.mp3') }}" type="audio/mpeg">
+</audio>
 <body class="bg-gradient-to-br from-slate-50 to-blue-50 min-h-screen">
 
     <!-- Mobile Menu Overlay -->
     <div id="mobile-menu-overlay" class="fixed inset-0 bg-black bg-opacity-50 z-40 hidden md:hidden"></div>
 
     <!-- Mobile Menu -->
+    
     <div id="mobile-menu" class="mobile-menu fixed top-0 left-0 w-64 h-full bg-white shadow-xl z-50 md:hidden">
         <div class="p-6">
             <div class="flex items-center justify-between mb-8">
@@ -113,6 +142,12 @@
                     <i class="fas fa-times"></i>
                 </button>
             </div>
+            <li>
+    <a href="" class="block py-2 px-4 text-gray-700 hover:bg-pink-50 hover:text-pink-600 rounded-lg transition flex justify-between items-center">
+        <span>Notifications</span>
+        <span id="mobile-notification-counter" class="bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center hidden">0</span>
+    </a>
+</li>
             <nav>
                 <ul class="space-y-4">
                     <li><a href="#"
@@ -169,9 +204,7 @@
                         <li><a href="{{route('salonsOwner.appointment')}}"
                                 class="nav-link text-white hover:text-pink-200 font-medium transition duration-300 pb-1">Appointments</a>
                         </li>
-                        <li><a href="#"
-                                class="nav-link text-white hover:text-pink-200 font-medium transition duration-300 pb-1">Clients</a>
-                        </li>
+                
                         <li><a href="#"
                                 class="nav-link text-white hover:text-pink-200 font-medium transition duration-300 pb-1">Services</a>
                         </li>
@@ -185,6 +218,28 @@
                 </nav>
 
                 <!-- User Profile and Logout -->
+                <!-- Header Section में User Profile के पास -->
+<div class="hidden md:flex items-center space-x-6">
+    <!-- Notification Bell -->
+    <div class="relative">
+        <button id="notification-bell" class="text-white text-2xl relative">
+            <i class="fas fa-bell"></i>
+            <span id="notification-counter" class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center hidden">0</span>
+        </button>
+        
+        <!-- Notification Dropdown -->
+        <div id="notification-dropdown" class="absolute right-0 mt-2 w-80 bg-white rounded-xl shadow-xl opacity-0 invisible transform scale-95 transition-all duration-200 z-20 max-h-96 overflow-y-auto">
+            <div class="p-4 border-b">
+                <h4 class="font-bold text-gray-800">Notifications</h4>
+            </div>
+            <div id="notification-list" class="divide-y">
+                <!-- Notifications will appear here dynamically -->
+                <div class="p-4 text-center text-gray-500">No new notifications</div>
+            </div>
+        </div>
+    </div>
+    
+   
                 <div class="hidden md:flex items-center space-x-4">
                     <div class="relative">
                         <button id="user-menu-btn"
@@ -457,7 +512,124 @@
 
         document.body.style.opacity = '0';
         document.body.style.transition = 'opacity 0.5s ease';
+
+
+
+
     </script>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Debug Pusher connection
+    console.log('Initializing Pusher...');
+    
+    // Pusher Notification Setup
+    const pusher = new Pusher('{{ env('PUSHER_APP_KEY') }}', {
+        cluster: '{{ env('PUSHER_APP_CLUSTER') }}',
+        encrypted: true,
+        authEndpoint: '/broadcasting/auth', // Add this if using private channels
+        auth: {
+            headers: {
+                'X-CSRF-Token': '{{ csrf_token() }}'
+            }
+        }
+    });
+
+    // Connection logging
+    pusher.connection.bind('state_change', function(states) {
+        console.log('Pusher connection state:', states.current);
+    });
+
+    // Subscribe to salon owner's private channel
+    const channelName = 'salon.{{ Auth::id() }}';
+    console.log('Subscribing to channel:', channelName);
+    
+    const channel = pusher.subscribe(channelName);
+    
+    channel.bind('pusher:subscription_succeeded', function() {
+        console.log('Successfully subscribed to channel:', channelName);
+    });
+
+    // Listen for new booking event
+    channel.bind('new.booking', function(data) {
+        console.log('New booking received:', data);
+        
+        // Play notification sound
+        const sound = document.getElementById('notification-sound');
+        if (sound) {
+            sound.play().catch(e => console.log('Sound play failed:', e));
+        }
+        
+        // Update counters
+        const counter = document.getElementById('notification-counter');
+        const mobileCounter = document.getElementById('mobile-notification-counter');
+        
+        if (counter && mobileCounter) {
+            let count = parseInt(counter.textContent || '0') + 1;
+            counter.textContent = count;
+            mobileCounter.textContent = count;
+            counter.classList.remove('hidden');
+            mobileCounter.classList.remove('hidden');
+        }
+        
+        // Add new notification to dropdown
+        const notificationList = document.getElementById('notification-list');
+        if (notificationList) {
+            const notificationItem = document.createElement('div');
+            notificationItem.className = 'p-4 hover:bg-gray-50 cursor-pointer';
+            notificationItem.innerHTML = `
+                <div class="flex items-start">
+                    <div class="bg-pink-100 p-2 rounded-full mr-3">
+                        <i class="fas fa-calendar-check text-pink-500"></i>
+                    </div>
+                    <div>
+                        <p class="font-medium text-gray-800">New Appointment</p>
+                        <p class="text-sm text-gray-500">${data.booking.name} - ${new Date(data.booking.appointment_time).toLocaleString()}</p>
+                        <p class="text-xs text-gray-400 mt-1">Just now</p>
+                    </div>
+                </div>
+            `;
+            
+            if (notificationList.firstChild && notificationList.firstChild.textContent.includes('No new notifications')) {
+                notificationList.innerHTML = '';
+            }
+            notificationList.prepend(notificationItem);
+        }
+        
+        // Animate bell icon
+        const bell = document.getElementById('notification-bell');
+        if (bell) {
+            bell.classList.add('animate-ping');
+            setTimeout(() => {
+                bell.classList.remove('animate-ping');
+            }, 1000);
+        }
+    });
+
+    // Toggle notification dropdown
+    const notificationBell = document.getElementById('notification-bell');
+    if (notificationBell) {
+        notificationBell.addEventListener('click', function() {
+            const dropdown = document.getElementById('notification-dropdown');
+            if (dropdown) {
+                const isVisible = !dropdown.classList.contains('opacity-0');
+                
+                if (isVisible) {
+                    dropdown.classList.add('opacity-0', 'invisible', 'scale-95');
+                } else {
+                    dropdown.classList.remove('opacity-0', 'invisible', 'scale-95');
+                    // Reset counters when dropdown is opened
+                    const counter = document.getElementById('notification-counter');
+                    const mobileCounter = document.getElementById('mobile-notification-counter');
+                    if (counter) counter.classList.add('hidden');
+                    if (mobileCounter) mobileCounter.classList.add('hidden');
+                }
+            }
+        });
+    }
+});
+</script>
+
 
 </body>
 

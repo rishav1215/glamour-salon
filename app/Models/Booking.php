@@ -14,10 +14,11 @@ class Booking extends Model
     'email',
     'appointment_date', 
     'appointment_time',
+    'status',
     'notes',
 ];
 
 public function salon() {
-    return $this->belongsTo(Salon::class);
+    return $this->belongsTo(Salon::class);  
 }
 }

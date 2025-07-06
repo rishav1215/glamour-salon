@@ -1,4 +1,4 @@
-<h2>Hi {{ $appointment->customer->name }}</h2>
+<h2>Hi {{ $appointment->name }}</h2>
 
 <p>Your appointment is confirmed.</p>
 

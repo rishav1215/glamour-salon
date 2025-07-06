@@ -242,11 +242,11 @@
                         <div class="space-y-3 mb-6">
                             <div class="flex items-center justify-between text-sm">
                                 <span class="text-gray-600">Active Users:</span>
-                                <span class="font-semibold text-blue-600">1,284</span>
+                                <span class="font-semibold text-blue-600">{{$users}}</span>
                             </div>
                             <div class="flex items-center justify-between text-sm">
                                 <span class="text-gray-600">New This Month:</span>
-                                <span class="font-semibold text-green-600">+142</span>
+                                <span class="font-semibold text-green-600">+12</span>
                             </div>
                         </div>
                         <a href="#"
@@ -271,7 +271,7 @@
                         <div class="space-y-3 mb-6">
                             <div class="flex items-center justify-between text-sm">
                                 <span class="text-gray-600">Active Salons:</span>
-                                <span class="font-semibold text-purple-600">47</span>
+                                <span class="font-semibold text-purple-600">{{$totalSalons}}</span>
                             </div>
                             <div class="flex items-center justify-between text-sm">
                                 <span class="text-gray-600">Pending Approval:</span>
@@ -301,11 +301,11 @@
                         <div class="space-y-3 mb-6">
                             <div class="flex items-center justify-between text-sm">
                                 <span class="text-gray-600">Total Appointments:</span>
-                                <span class="font-semibold text-pink-600">8,942</span>
+                                <span class="font-semibold text-pink-600">{{$totalAppointments}}</span>
                             </div>
                             <div class="flex items-center justify-between text-sm">
                                 <span class="text-gray-600">Today's Bookings:</span>
-                                <span class="font-semibold text-green-600">127</span>
+                                <span class="font-semibold text-green-600">10</span>
                             </div>
                         </div>
                         <a href="#"

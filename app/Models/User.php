@@ -35,6 +35,7 @@ public function salonAppointments()
         'email',
         'password',
         'role',
+        'status',
     ];
 
     /**

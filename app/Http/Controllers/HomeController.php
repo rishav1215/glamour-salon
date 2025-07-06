@@ -10,6 +10,9 @@ class HomeController extends Controller
      public function index()
     {
         $salons = Salon::where('is_approved', true)->latest()->get();
-        return view('home', compact('salons'));
+        
+    $salon = Salon::where('status', 'active')->get();
+        
+        return view('home', compact('salons', 'salon'));
     }
 }

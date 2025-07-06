@@ -50,17 +50,27 @@ Route::middleware('auth')->group(function () {
     Route::get('/owner/appointments', [BookingController::class, 'salonAppointments'])->name('salonsOwner.appointment');
 });
 
-// Admin-only
-Route::middleware(['auth', 'admin'])->group(function () {
-    Route::get('/admin/dashboard', [AdminController::class, 'dashboard'])->name('admin.dashboard');
-});
 Route::middleware(['auth', 'admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
+    Route::get('/manage-salon',[AdminController::class, 'manageSalon'])->name('manageSalon');
+    Route::get('/setting', [AdminController::class, 'setting'])->name('setting');
+
+    Route::get('/salon/{id}', [AdminController::class, 'showSalon'])->name('showSalon');
+Route::get('/salon/{id}/edit', [AdminController::class, 'editSalon'])->name('editSalon');
+Route::post('/salon/{id}/block', [AdminController::class, 'blockSalon'])->name('blockSalon');
+
+    Route::get('/salon/{id}/edit', [AdminController::class, 'editSalon'])->name('editSalon');
+Route::post('/salon/{id}/update', [AdminController::class, 'updateSalon'])->name('updateSalon');
+
+Route::get('/analytics', [AdminController::class, 'analytics'])->name('analytics');
+
+
+    Route::resource('appointments', \App\Http\Controllers\Admin\AppointmentController::class);
     Route::resource('users', \App\Http\Controllers\Admin\UserController::class);
 });
     
-// Appointment resource (if needed)
-Route::middleware(['auth'])->group(function () {
-    Route::resource('appointments', \App\Http\Controllers\Admin\AppointmentController::class);
-     Route::patch('/bookings/{booking}/approve', [BookingController::class, 'approve'])->name('bookings.approve');
-});
+    // Appointment resource (if needed)
+    Route::middleware(['auth'])->group(function () {
+        Route::get('/bookings/{booking}/approve', [BookingController::class, 'approve'])->name('bookings.approve');
+    });
 Route::get('/salon/{id}', [SalonController::class, 'show'])->name('salon.show');

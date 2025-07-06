@@ -10,8 +10,8 @@
     <p><strong>Salon:</strong> {{ $booking->salon->name }}</p>
     <p><strong>Name:</strong> {{ $booking->name }}</p>
     <p><strong>Email:</strong> {{ $booking->email }}</p>
-    <p><strong>Contact:</strong> {{ $booking->contact }}</p>
-    <p><strong>Date & Time:</strong> {{ $booking->appointment_time->format('d M Y, h:i A') }}</p>
+    <p><strong>Contact:</strong> {{ $booking->contact }}</p>    
+<p><strong>Date & Time:</strong> {{ \Carbon\Carbon::parse($booking->appointment_time)->format('d M Y, h:i A') }}</p>
     <p><strong>Notes:</strong> {{ $booking->notes ?? 'None' }}</p>
 </body>
 </html>

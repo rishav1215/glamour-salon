@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Booking;
 use Illuminate\Http\Request;
 
 class AppointmentController extends Controller
@@ -12,7 +13,8 @@ class AppointmentController extends Controller
      */
     public function index()
     {
-        //
+       $appointments = Booking::paginate(10);
+return view('admin.appointments.index', compact('appointments'));
     }
 
     /**
