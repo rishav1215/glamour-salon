@@ -1,8 +1,7 @@
 <?php
-
 namespace App\Events;
 
-use App\Models\Booking;
+use App\Models\Booking; // bookings table
 use Illuminate\Broadcasting\Channel;
 use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
@@ -15,37 +14,61 @@ class NewAppointmentBooked implements ShouldBroadcast
 
     public $booking;
 
+    /**
+     * Create a new event instance.
+     *
+     * @param Booking $booking
+     */
     public function __construct(Booking $booking)
     {
-        $this->booking = $booking->load('salon.user'); // Eager load relationships
+        // Load salon + salon user
+        $this->booking = $booking->loadMissing('salon.user');
     }
 
+    /**
+     * Get the channels the event should broadcast on.
+     *
+     * @return Channel
+     * @throws \Exception
+     */
     public function broadcastOn()
     {
-        // Add validation to ensure salon and user exist
-        if (!$this->booking->salon || !$this->booking->salon->user_id) {
-            return [];
+        if (!$this->booking->salon) {
+            throw new \Exception('Broadcast failed: Salon not found on booking ID ' . $this->booking->id);
         }
 
-        return new Channel('salon.'.$this->booking->salon->user_id);
+        if (!$this->booking->salon->user_id) {
+            throw new \Exception('Broadcast failed: Salon user_id missing for booking ID ' . $this->booking->id);
+        }
+
+        return new Channel('salon.' . $this->booking->salon->user_id);
     }
 
+    /**
+     * Custom event name on frontend.
+     *
+     * @return string
+     */
     public function broadcastAs()
     {
         return 'new.booking';
     }
 
-    // Add this to control what data gets sent to the frontend
+    /**
+     * Data payload sent to frontend.
+     *
+     * @return array
+     */
     public function broadcastWith()
     {
         return [
             'booking' => [
                 'id' => $this->booking->id,
                 'name' => $this->booking->name,
-                'appointment_time' => $this->booking->appointment_time->toDateTimeString(),
+                'appointment_time' => optional($this->booking->appointment_time)->toDateTimeString(),
                 'salon_id' => $this->booking->salon_id,
-                // Add other relevant fields
-            ]
+                // 'user_name' => $this->booking->salon->user->name ?? null,
+            ],
         ];
     }
 }
